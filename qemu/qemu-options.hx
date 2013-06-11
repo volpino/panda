@@ -2625,6 +2625,14 @@ DEF("tubtf", 0, QEMU_OPTION_tubtf,
 "-tubtf          use Tim's uncomplicated binary trace format for traces", QEMU_ARCH_ALL)
 
 
+DEF("random-seed", HAS_ARG, QEMU_OPTION_random_seed, \
+    "-random-seed n  set random seed\n", QEMU_ARCH_ALL)
+STEXI
+@item -random-seed @var{n}
+@findex -random-seed
+Set the seed used with srand().
+ETEXI
+
 HXCOMM This is the last statement. Insert new options before this line!
 STEXI
 @end table

@@ -3247,6 +3247,13 @@ int main(int argc, char **argv, char **envp)
 	      printf ("tubtf logging on\n");
 	      tubtf_on = 1;
 
+            case QEMU_OPTION_random_seed:
+                {
+                    int seed = strtol(optarg, NULL, 0);
+                    fprintf(stderr, "Setting random seed to %d\n", seed);
+                    srand(seed);
+                }
+                break;
             default:
                 os_parse_cmd_args(popt->index, optarg);
             }
