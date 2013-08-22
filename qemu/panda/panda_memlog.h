@@ -27,7 +27,8 @@ typedef enum {
     PSTORE, // port store
     BRANCHOP,
     SELECT,
-    SWITCH
+    SWITCH,
+    LOGOP_LAST
 } LogOp;
 
 typedef struct dyn_val_buffer_struct {

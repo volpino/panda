@@ -43,11 +43,69 @@ FILE *dlog;          // Dynamic value log
 bool except;         // Exception flag, global regardless of generated code or
                      // helper function
 
+#define LOG_AFTER 115000
+size_t dyn_idx = 0;
+
+const char *LogOpStr[LOGOP_LAST] = {
+    "LOAD",
+    "STORE",
+    "BRANCHOP",
+    "SELECT",
+    "SWITCH"
+};
+
+const char *AddrTypeStr[ADDRTYPE_LAST] = {
+    "HADDR",
+    "MADDR",
+    "IADDR",
+    "LADDR",
+    "GREG",
+    "GSPEC",
+    "UNK",
+    "CONST",
+    "RET"
+};
+
+void print_dynval(DynValEntry *ent, int i) {
+    switch (ent->entrytype) {
+    case ADDRENTRY:
+        {
+        Addr addr = ent->entry.memaccess.addr;
+        fprintf(stderr, "%08d: ADDR   %-5s %-5s %#010lx AddrFlag=%#010x, off=%#x\n", i,
+                LogOpStr[ent->entry.memaccess.op],
+                AddrTypeStr[addr.typ], addr.val.ma,
+                addr.flag, addr.off
+                );
+        }
+        break;
+    case BRANCHENTRY:
+        fprintf(stderr, "%08d: BRANCH br=%d.\n", i, ent->entry.branch.br);
+        break;
+    case SELECTENTRY:
+        fprintf(stderr, "%08d: SELECT sel=%d.\n", i, ent->entry.select.sel);
+        break;
+    case SWITCHENTRY:
+        fprintf(stderr, "%08d: SWITCH cond=%u.\n", i, ent->entry.switchstmt.cond);
+        break;
+    case EXCEPTIONENTRY:
+        fprintf(stderr, "%08d: Format of EXCEPTIONENTRY not known.\n", i);
+        break;
+    }
+}
+
+void print_entry(Instruction &I, DynValEntry *ent, int idx) {
+    I.dump();
+    fflush(stderr);
+    print_dynval(ent, idx);
+    fflush(stderr);
+}
+
 /***
  *** TestInstVisitor
  ***/
 
 void TestInstVisitor::visitLoadInst(LoadInst &I){
+    return;
     if (except){
         return;
     }
@@ -55,6 +113,8 @@ void TestInstVisitor::visitLoadInst(LoadInst &I){
     //printf("load\n");
     DynValEntry entry;
     size_t n = fread(&entry, sizeof(DynValEntry), 1, dlog);
+    if (dyn_idx > LOG_AFTER) print_entry(I, &entry, dyn_idx);
+    dyn_idx++;
     if (entry.entrytype == EXCEPTIONENTRY){
         except = true;
         return;
@@ -64,6 +124,7 @@ void TestInstVisitor::visitLoadInst(LoadInst &I){
 }
 
 void TestInstVisitor::visitStoreInst(StoreInst &I){
+    return;
     if (I.isVolatile() || except){
         return; // These are part of the runtime system that we don't log
     }
@@ -71,6 +132,8 @@ void TestInstVisitor::visitStoreInst(StoreInst &I){
     //printf("store\n");
     DynValEntry entry;
     size_t n = fread(&entry, sizeof(DynValEntry), 1, dlog);
+    if (dyn_idx > LOG_AFTER) print_entry(I, &entry, dyn_idx);
+    dyn_idx++;
     if (entry.entrytype == EXCEPTIONENTRY){
         except = true;
         return;
@@ -87,6 +150,8 @@ void TestInstVisitor::visitBranchInst(BranchInst &I){
     //printf("branch\n");
     DynValEntry entry;
     size_t n = fread(&entry, sizeof(DynValEntry), 1, dlog);
+    if (dyn_idx > LOG_AFTER) print_entry(I, &entry, dyn_idx);
+    dyn_idx++;
     if (entry.entrytype == EXCEPTIONENTRY){
         except = true;
         return;
@@ -97,6 +162,7 @@ void TestInstVisitor::visitBranchInst(BranchInst &I){
 
 void TestInstVisitor::visitReturnInst(ReturnInst &I){
     //printf("ret\n");
+    fprintf(stderr, "-------- %s --------\n", I.getParent()->getParent()->getName().str().c_str());
     TFP->setRetFlag(true);
 }
 
@@ -106,6 +172,7 @@ void TestInstVisitor::visitReturnInst(ReturnInst &I){
  */
 void TestInstVisitor::visitUnreachable(UnreachableInst &I){
     //printf("ret\n");
+    fprintf(stderr, "-------- %s --------\n", I.getParent()->getParent()->getName().str().c_str());
     TFP->setRetFlag(true);
 }
 
@@ -117,6 +184,8 @@ void TestInstVisitor::visitSelectInst(SelectInst &I){
     //printf("select\n");
     DynValEntry entry;
     size_t n = fread(&entry, sizeof(DynValEntry), 1, dlog);
+    if (dyn_idx > LOG_AFTER) print_entry(I, &entry, dyn_idx);
+    dyn_idx++;
     if (entry.entrytype == EXCEPTIONENTRY){
         except = true;
         return;
@@ -136,6 +205,8 @@ void TestInstVisitor::visitCallInst(CallInst &I){
 
         DynValEntry entry;
         size_t n = fread(&entry, sizeof(DynValEntry), 1, dlog);
+        if (dyn_idx > LOG_AFTER) print_entry(I, &entry, dyn_idx);
+        dyn_idx++;
         if (entry.entrytype == EXCEPTIONENTRY){
             except = true;
             return;
@@ -151,6 +222,8 @@ void TestInstVisitor::visitCallInst(CallInst &I){
     
         DynValEntry entry;
         size_t n = fread(&entry, sizeof(DynValEntry), 1, dlog);
+        if (dyn_idx > LOG_AFTER) print_entry(I, &entry, dyn_idx);
+        dyn_idx++;
         if (entry.entrytype == EXCEPTIONENTRY){
             except = true;
             return;
@@ -179,6 +252,8 @@ void TestInstVisitor::visitSwitchInst(SwitchInst &I){
     
     DynValEntry entry;
     size_t n = fread(&entry, sizeof(DynValEntry), 1, dlog);
+    if (dyn_idx > LOG_AFTER) print_entry(I, &entry, dyn_idx);
+    dyn_idx++;
     if (entry.entrytype == EXCEPTIONENTRY){
         except = true;
         return;
@@ -216,6 +291,8 @@ bool TestFunctionPass::runOnFunction(Function &F){
     retFlag = false;
     except = false;
 
+    fprintf(stderr, "++++++++ %s ++++++++\n", F.getName().str().c_str());
+
     // Process function starting with the entry basic block
     Function::iterator bb = F.begin();
     TIV->visit(bb);
@@ -224,7 +301,6 @@ bool TestFunctionPass::runOnFunction(Function &F){
     if (F.size() > 1){
         while (!retFlag && !except){ // Continue until we reach a return
                                      // instruction or exception
-            //printf("visiting BB %s\n", next_bb->getName().str().c_str());
             TIV->visit(next_bb);
         }
     }
