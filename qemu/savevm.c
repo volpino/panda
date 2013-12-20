@@ -2093,6 +2093,45 @@ void do_savevm(Monitor *mon, const QDict *qdict) {
   do_savevm_aux(mon, name);
 }
 
+void do_savevm_rr(Monitor *mon, const char *name) {
+    int ret;
+    QEMUFile *f;
+
+    /* save the VM state */
+    f = qemu_fopen(name, "wb");
+    if (!f) {
+        error_report("Could not open VM state file\n");
+        return;
+    }
+    ret = qemu_savevm_state(mon, f);
+    qemu_fclose(f);
+    if (ret < 0) {
+        monitor_printf(mon, "Error %d while writing VM\n", ret);
+    }
+}
+
+// Just implement vmstate loading (don't apply block dev snapshots)
+int load_vmstate_rr(const char *name) {
+    QEMUFile *f;
+    int ret;
+
+    f = qemu_fopen(name, "rb");
+    if (!f) {
+        error_report("Could not open VM state file");
+        return -EINVAL;
+    }
+
+    qemu_system_reset(VMRESET_SILENT);
+    ret = qemu_loadvm_state(f);
+
+    qemu_fclose(f);
+    if (ret < 0) {
+        error_report("Error %d while loading VM state", ret);
+        return ret;
+    }
+    return 0;
+}
+
 int load_vmstate(const char *name)
 {
     BlockDriverState *bs, *bs_vm_state;

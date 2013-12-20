@@ -1224,7 +1224,7 @@ void rr_do_begin_record(const char *file_name_full, void *cpu_state) {
   // first take a snapshot
   rr_get_snapshot_name(rr_name, name_buf, sizeof(name_buf));
   printf ("writing snapshot:\t%s\n", name_buf);
-  do_savevm_aux(get_monitor(), name_buf);
+  do_savevm_rr(get_monitor(), name_buf);
   log_all_cpu_states();
 
   // save the time so we can report how long record takes
@@ -1296,7 +1296,7 @@ void rr_do_begin_replay(const char *file_name_full, void *cpu_state) {
   }
   printf ("loading snapshot\n");
   //  vm_stop(0) RUN_STATE_RESTORE_VM);
-  load_vmstate(name_buf);
+  load_vmstate_rr(name_buf);
   printf ("... done.\n");
   log_all_cpu_states();
 
