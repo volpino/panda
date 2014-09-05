@@ -32,18 +32,18 @@ Let's run PANDA with stringsearch turned on. It requires the
 Now `stringsearch` will give us a bunch of matches, the first of which
 are:
 
-> WRITE Match of str 0 at: instr_count=10649029 :  0045b42d 00437e77 06cba000
-> WRITE Match of str 0 at: instr_count=10651144 :  0045b42d 00437eee 06cba000
-> WRITE Match of str 0 at: instr_count=10848983 :  0045b42d 00437e77 06cba000
-> WRITE Match of str 0 at: instr_count=10851098 :  0045b42d 00437eee 06cba000
-> READ Match of str 0 at: instr_count=10860768 :  00437a2b 0049aad4 06cba000
-> READ Match of str 0 at: instr_count=10861024 :  00437a2b 0049aad4 06cba000
-> READ Match of str 0 at: instr_count=10861317 :  00437a2b 0049aad4 06cba000
-> READ Match of str 0 at: instr_count=10861638 :  00437a2b 0049aad4 06cba000
-> READ Match of str 0 at: instr_count=10862350 :  00437a68 00411362 06cba000
-> WRITE Match of str 0 at: instr_count=10862350 :  00437a68 00411362 06cba000
-> READ Match of str 0 at: instr_count=10862853 :  0045b73a 00411362 06cba000
-> WRITE Match of str 0 at: instr_count=10862853 :  0045b73a 00411362 06cba000
+  WRITE Match of str 0 at: instr_count=10649029 :  0045b42d 00437e77 06cba000
+  WRITE Match of str 0 at: instr_count=10651144 :  0045b42d 00437eee 06cba000
+  WRITE Match of str 0 at: instr_count=10848983 :  0045b42d 00437e77 06cba000
+  WRITE Match of str 0 at: instr_count=10851098 :  0045b42d 00437eee 06cba000
+  READ Match of str 0 at: instr_count=10860768 :  00437a2b 0049aad4 06cba000
+  READ Match of str 0 at: instr_count=10861024 :  00437a2b 0049aad4 06cba000
+  READ Match of str 0 at: instr_count=10861317 :  00437a2b 0049aad4 06cba000
+  READ Match of str 0 at: instr_count=10861638 :  00437a2b 0049aad4 06cba000
+  READ Match of str 0 at: instr_count=10862350 :  00437a68 00411362 06cba000
+  WRITE Match of str 0 at: instr_count=10862350 :  00437a68 00411362 06cba000
+  READ Match of str 0 at: instr_count=10862853 :  0045b73a 00411362 06cba000
+  WRITE Match of str 0 at: instr_count=10862853 :  0045b73a 00411362 06cba000
 
 The first number is the return address on the stack (i.e. the value
 pointed at by EBP), the second is the EIP at which the string was seen,
