@@ -314,6 +314,7 @@ struct StaticBlock {
 #endif //defined CONFIG_PANDA_VMI
         if(TRACK_TAINT){
             init_taint_api();
+            taint_enable_taint();
         }
         registerSyscallListeners();
     }
@@ -497,7 +498,6 @@ static void fdtracker_sys_readahead_callback(CPUState* env,target_ulong pc,int32
 
 /* Apply taint to all bytes in the buffer */
 static void taintify(target_ulong guest_vaddr, uint32_t len, uint32_t label, bool autoenc) {
-    taint_enable_taint();
     for(uint32_t i = 0; i < len; i++){
         target_ulong va = guest_vaddr + i;
         target_phys_addr_t pa = cpu_get_phys_addr(cpu_single_env, va);
