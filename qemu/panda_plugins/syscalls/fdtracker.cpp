@@ -537,9 +537,6 @@ static Callback_RC read_callback(CallbackData* opaque, CPUState* env, target_asi
     fdlog << "Process " << comm << " finished reading " << filename << " return value " << retval <<  endl;
     // if we don't want to taint this file, we're done
     const char* datadata = "/data/data";
-    if (env->cr[3] != 0x0793c000) {
-        return Callback_RC::NORMAL;
-    }
     if(TRACK_TAINT){
         //if the taint engine isn't on, turn it on and re-translate the TB with LLVM
         if(1 != taint_enabled()){
