@@ -6071,6 +6071,35 @@ data->pc = pc;
 data->filename = filename;
 data->utimes = utimes;
 appendReturnPoint(ReturnPoint(calc_retaddr(env, pc), get_asid(env, pc), data, sys_utimes_returned));}
+std::vector<std::function<void(CPUState*, target_ulong, int32_t, uint64_t, uint64_t, int32_t)>> internal_registered_callback_sys_fadvise64_64;
+void syscalls::register_call_sys_fadvise64_64(std::function<void(CPUState*, target_ulong, int32_t, uint64_t, uint64_t, int32_t)> callback){
+internal_registered_callback_sys_fadvise64_64.push_back(callback);
+}
+struct sys_fadvise64_64_calldata : public CallbackData {
+target_ulong pc;
+int32_t fd;
+uint64_t offset;
+uint64_t len;
+int32_t advice;
+};
+static Callback_RC sys_fadvise64_64_returned(CallbackData* opaque, CPUState* env, target_asid asid){
+sys_fadvise64_64_calldata* data = dynamic_cast<sys_fadvise64_64_calldata*>(opaque);
+if(!data) {fprintf(stderr,"oops\n"); return Callback_RC::ERROR;}
+PPP_RUN_CB(on_sys_fadvise64_64_returned, env,data->pc,data->fd,data->offset,data->len,data->advice)
+return Callback_RC::NORMAL;
+}
+void syscalls::call_sys_fadvise64_64_callback(CPUState* env,target_ulong pc,int32_t fd,uint64_t offset,uint64_t len,int32_t advice) {
+for (auto x: internal_registered_callback_sys_fadvise64_64){
+    x(env,pc,fd,offset,len,advice);
+}
+if (0 == ppp_on_sys_fadvise64_64_returned_num_cb) return;
+sys_fadvise64_64_calldata* data = new sys_fadvise64_64_calldata;
+data->pc = pc;
+data->fd = fd;
+data->offset = offset;
+data->len = len;
+data->advice = advice;
+appendReturnPoint(ReturnPoint(calc_retaddr(env, pc), get_asid(env, pc), data, sys_fadvise64_64_returned));}
 std::vector<std::function<void(CPUState*, target_ulong, uint32_t, uint32_t, uint32_t, target_ulong, uint32_t, uint32_t)>> internal_registered_callback_sys_mbind;
 void syscalls::register_call_sys_mbind(std::function<void(CPUState*, target_ulong, uint32_t, uint32_t, uint32_t, target_ulong, uint32_t, uint32_t)> callback){
 internal_registered_callback_sys_mbind.push_back(callback);
@@ -7174,6 +7203,35 @@ data->off_out = off_out;
 data->len = len;
 data->flags = flags;
 appendReturnPoint(ReturnPoint(calc_retaddr(env, pc), get_asid(env, pc), data, sys_splice_returned));}
+std::vector<std::function<void(CPUState*, target_ulong, int32_t, uint64_t, uint64_t, uint32_t)>> internal_registered_callback_sys_sync_file_range;
+void syscalls::register_call_sys_sync_file_range(std::function<void(CPUState*, target_ulong, int32_t, uint64_t, uint64_t, uint32_t)> callback){
+internal_registered_callback_sys_sync_file_range.push_back(callback);
+}
+struct sys_sync_file_range_calldata : public CallbackData {
+target_ulong pc;
+int32_t fd;
+uint64_t offset;
+uint64_t nbytes;
+uint32_t flags;
+};
+static Callback_RC sys_sync_file_range_returned(CallbackData* opaque, CPUState* env, target_asid asid){
+sys_sync_file_range_calldata* data = dynamic_cast<sys_sync_file_range_calldata*>(opaque);
+if(!data) {fprintf(stderr,"oops\n"); return Callback_RC::ERROR;}
+PPP_RUN_CB(on_sys_sync_file_range_returned, env,data->pc,data->fd,data->offset,data->nbytes,data->flags)
+return Callback_RC::NORMAL;
+}
+void syscalls::call_sys_sync_file_range_callback(CPUState* env,target_ulong pc,int32_t fd,uint64_t offset,uint64_t nbytes,uint32_t flags) {
+for (auto x: internal_registered_callback_sys_sync_file_range){
+    x(env,pc,fd,offset,nbytes,flags);
+}
+if (0 == ppp_on_sys_sync_file_range_returned_num_cb) return;
+sys_sync_file_range_calldata* data = new sys_sync_file_range_calldata;
+data->pc = pc;
+data->fd = fd;
+data->offset = offset;
+data->nbytes = nbytes;
+data->flags = flags;
+appendReturnPoint(ReturnPoint(calc_retaddr(env, pc), get_asid(env, pc), data, sys_sync_file_range_returned));}
 std::vector<std::function<void(CPUState*, target_ulong, int32_t, int32_t, uint32_t, uint32_t)>> internal_registered_callback_sys_tee;
 void syscalls::register_call_sys_tee(std::function<void(CPUState*, target_ulong, int32_t, int32_t, uint32_t, uint32_t)> callback){
 internal_registered_callback_sys_tee.push_back(callback);

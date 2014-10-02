@@ -493,6 +493,8 @@ void register_call_sys_tgkill(std::function<void(CPUState*, target_ulong, int32_
 void call_sys_tgkill_callback(CPUState* env,target_ulong pc,int32_t tgid,int32_t pid,int32_t sig);
 void register_call_sys_utimes(std::function<void(CPUState*, target_ulong, syscalls::string, target_ulong)> callback);
 void call_sys_utimes_callback(CPUState* env,target_ulong pc,syscalls::string filename,target_ulong utimes);
+void register_call_sys_fadvise64_64(std::function<void(CPUState*, target_ulong, int32_t, uint64_t, uint64_t, int32_t)> callback);
+void call_sys_fadvise64_64_callback(CPUState* env,target_ulong pc,int32_t fd,uint64_t offset,uint64_t len,int32_t advice);
 void register_call_sys_mbind(std::function<void(CPUState*, target_ulong, uint32_t, uint32_t, uint32_t, target_ulong, uint32_t, uint32_t)> callback);
 void call_sys_mbind_callback(CPUState* env,target_ulong pc,uint32_t start,uint32_t len,uint32_t mode,target_ulong nmask,uint32_t maxnode,uint32_t flags);
 void register_call_sys_get_mempolicy(std::function<void(CPUState*, target_ulong, target_ulong, target_ulong, uint32_t, uint32_t, uint32_t)> callback);
@@ -571,6 +573,8 @@ void register_call_sys_get_robust_list(std::function<void(CPUState*, target_ulon
 void call_sys_get_robust_list_callback(CPUState* env,target_ulong pc,int32_t pid,target_ulong head_ptr,target_ulong len_ptr);
 void register_call_sys_splice(std::function<void(CPUState*, target_ulong, int32_t, target_ulong, int32_t, target_ulong, uint32_t, uint32_t)> callback);
 void call_sys_splice_callback(CPUState* env,target_ulong pc,int32_t fd_in,target_ulong off_in,int32_t fd_out,target_ulong off_out,uint32_t len,uint32_t flags);
+void register_call_sys_sync_file_range(std::function<void(CPUState*, target_ulong, int32_t, uint64_t, uint64_t, uint32_t)> callback);
+void call_sys_sync_file_range_callback(CPUState* env,target_ulong pc,int32_t fd,uint64_t offset,uint64_t nbytes,uint32_t flags);
 void register_call_sys_tee(std::function<void(CPUState*, target_ulong, int32_t, int32_t, uint32_t, uint32_t)> callback);
 void call_sys_tee_callback(CPUState* env,target_ulong pc,int32_t fdin,int32_t fdout,uint32_t len,uint32_t flags);
 void register_call_sys_vmsplice(std::function<void(CPUState*, target_ulong, int32_t, target_ulong, uint32_t, uint32_t)> callback);

@@ -41,6 +41,7 @@ typedef void (*on_sys_fsetxattr_returned_t)(CPUState* env,target_ulong pc,int32_
 typedef void (*on_sys_mknod_returned_t)(CPUState* env,target_ulong pc,target_ulong filename,int32_t mode,uint32_t dev);
 typedef void (*on_sys_fstatfs_t)(CPUState* env,target_ulong pc,uint32_t fd,target_ulong buf);
 typedef void (*on_sys_fcntl64_t)(CPUState* env,target_ulong pc,uint32_t fd,uint32_t cmd,uint32_t arg);
+typedef void (*on_sys_fadvise64_64_t)(CPUState* env,target_ulong pc,int32_t fd,uint64_t offset,uint64_t len,int32_t advice);
 typedef void (*on_sys_settimeofday_t)(CPUState* env,target_ulong pc,target_ulong tv,target_ulong tz);
 typedef void (*on_sys_old_mmap_returned_t)(CPUState* env,target_ulong pc,target_ulong arg);
 typedef void (*on_sys_fchmodat_t)(CPUState* env,target_ulong pc,int32_t dfd,target_ulong filename,uint32_t mode);
@@ -79,6 +80,7 @@ typedef void (*on_sys_umask_t)(CPUState* env,target_ulong pc,int32_t mask);
 typedef void (*on_sys_newlstat_returned_t)(CPUState* env,target_ulong pc,target_ulong filename,target_ulong statbuf);
 typedef void (*on_sys_sched_get_priority_max_returned_t)(CPUState* env,target_ulong pc,int32_t policy);
 typedef void (*on_sys_setgroups_t)(CPUState* env,target_ulong pc,int32_t gidsetsize,target_ulong grouplist);
+typedef void (*on_sys_fadvise64_64_returned_t)(CPUState* env,target_ulong pc,int32_t fd,uint64_t offset,uint64_t len,int32_t advice);
 typedef void (*on_sys_getpgid_returned_t)(CPUState* env,target_ulong pc,uint32_t pid);
 typedef void (*on_sys_syncfs_returned_t)(CPUState* env,target_ulong pc,int32_t fd);
 typedef void (*on_sys_pwritev_returned_t)(CPUState* env,target_ulong pc,uint32_t fd,target_ulong vec,uint32_t vlen,uint32_t pos_l,uint32_t pos_h);
@@ -89,6 +91,7 @@ typedef void (*on_sys_clock_nanosleep_t)(CPUState* env,target_ulong pc,uint32_t 
 typedef void (*on_sys_timer_getoverrun_returned_t)(CPUState* env,target_ulong pc,uint32_t timer_id);
 typedef void (*on_sys_mremap_t)(CPUState* env,target_ulong pc,uint32_t addr,uint32_t old_len,uint32_t new_len,uint32_t flags,uint32_t new_addr);
 typedef void (*on_sys_sched_get_priority_max_t)(CPUState* env,target_ulong pc,int32_t policy);
+typedef void (*on_sys_sync_file_range_returned_t)(CPUState* env,target_ulong pc,int32_t fd,uint64_t offset,uint64_t nbytes,uint32_t flags);
 typedef void (*on_sys_ioperm_t)(CPUState* env,target_ulong pc,uint32_t from,uint32_t num,int32_t on);
 typedef void (*on_sys_delete_module_t)(CPUState* env,target_ulong pc,target_ulong name_user,uint32_t flags);
 typedef void (*on_sys_setxattr_t)(CPUState* env,target_ulong pc,target_ulong path,target_ulong name,target_ulong value,uint32_t size,int32_t flags);
@@ -185,6 +188,7 @@ typedef void (*on_sys_keyctl_returned_t)(CPUState* env,target_ulong pc,int32_t c
 typedef void (*on_sys_pread64_t)(CPUState* env,target_ulong pc,uint32_t fd,target_ulong buf,uint32_t count,uint64_t pos);
 typedef void (*on_sys_gettid_t)(CPUState* env,target_ulong pc);
 typedef void (*on_sys_munlock_t)(CPUState* env,target_ulong pc,uint32_t start,uint32_t len);
+typedef void (*on_sys_sync_file_range_t)(CPUState* env,target_ulong pc,int32_t fd,uint64_t offset,uint64_t nbytes,uint32_t flags);
 typedef void (*on_sys_epoll_create1_t)(CPUState* env,target_ulong pc,int32_t flags);
 typedef void (*on_sys_sigpending_t)(CPUState* env,target_ulong pc,target_ulong set);
 typedef void (*on_sys_close_returned_t)(CPUState* env,target_ulong pc,uint32_t fd);

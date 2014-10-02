@@ -16,8 +16,8 @@ syscalls::call_sys_exit_callback(env,pc,error_code);
 PPP_RUN_CB(on_sys_exit, env,pc,error_code)
 finish_syscall();
 }; break;
-// 2 3 long sys_read ['unsigned int fd', ' char __user *buf', ' size_t count']
-case 2: {
+// 3 long sys_read ['unsigned int fd', ' char __user *buf', ' size_t count']
+case 3: {
 record_syscall("sys_read");
 uint32_t fd = log_32(EBX, "unsigned int fd");
 target_ulong buf = log_pointer(ECX, " char __user *buf");
@@ -867,15 +867,15 @@ syscalls::call_sys_uname_callback(env,pc,arg0);
 PPP_RUN_CB(on_sys_uname, env,pc,arg0)
 finish_syscall();
 }; break;
-// 110 111 long sys_vhangup ['void']
-case 110: {
+// 111 long sys_vhangup ['void']
+case 111: {
 record_syscall("sys_vhangup");
 syscalls::call_sys_vhangup_callback(env,pc);
 PPP_RUN_CB(on_sys_vhangup, env,pc)
 finish_syscall();
 }; break;
-// 113 114 long sys_wait4 ['pid_t pid', ' int __user *stat_addr', 'int options', ' struct rusage __user *ru']
-case 113: {
+// 114 long sys_wait4 ['pid_t pid', ' int __user *stat_addr', 'int options', ' struct rusage __user *ru']
+case 114: {
 record_syscall("sys_wait4");
 uint32_t pid = log_32(EBX, "pid_t pid");
 target_ulong stat_addr = log_pointer(ECX, " int __user *stat_addr");
